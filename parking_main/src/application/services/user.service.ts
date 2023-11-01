@@ -8,11 +8,20 @@ export class UsersService {
   ) {}
 
   async findAll() {
-    console.log('chegou aqui');
     return this.userRepository.findAll();
   }
 
   async createUser(body: { email: string; name: string }) {
     return this.userRepository.create(body);
+  }
+
+  async updateUser(body: { email?: string; name?: string }, userId: string) {
+    const updateUser = await this.userRepository.update(body, userId);
+
+    return updateUser;
+  }
+
+  async findOne(userId: string) {
+    return this.userRepository.findOne(userId);
   }
 }

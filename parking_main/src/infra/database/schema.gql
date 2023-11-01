@@ -10,13 +10,21 @@ type User {
 
 type Query {
   findAll: [User!]!
+  findOne(id: String!): User!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 input CreateUserInput {
   email: String!
   name: String!
+}
+
+input UpdateUserInput {
+  email: String
+  name: String
+  id: String!
 }
