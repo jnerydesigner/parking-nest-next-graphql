@@ -1,0 +1,9 @@
+@startjson
+{
+  "ticket": {
+    "ticketId": "12345",
+    "userId": "12345",
+    "createdAt": "dataqualquer"
+  }
+}
+@endjson
