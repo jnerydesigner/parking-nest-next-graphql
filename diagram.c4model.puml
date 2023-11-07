@@ -1,20 +1,52 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-' uncomment the following line and comment the first to use locally
-' !include C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+
+!include ICONURL/devicons2/nestjs.puml
+!include ICONURL/devicons2/nextjs_original.puml
+!include ICONURL/devicons2/mongodb.puml
+!include ICONURL/material/add_to_queue.puml
+
+title "Estacionamento"
 
 LAYOUT_WITH_LEGEND()
 
-title System Context diagram for Internet Banking System
 
-Person(customer, "Personal Banking Customer", "A customer of the bank, with personal bank accounts.")
-System(banking_system, "Internet Banking System", "Allows customers to view information about their bank accounts, and make payments.")
+Person(admin, "Admin Front", "Administrador Front End")
+Person(user, "Usuário Mobile", "Usuário do Mobile")
 
-System_Ext(mail_system, "E-mail system", "The internal Microsoft Exchange e-mail system.")
-System_Ext(mainframe, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions, etc.")
+System_Boundary(c1, "Front End") {
+    Container(frontweb, "SPA", "NextJs", "Plataforma Web Administracao", $sprite="nextjs_original")
+}
 
-Rel(customer, banking_system, "Uses")
-Rel_Back(customer, mail_system, "Sends e-mails to")
-Rel_Neighbor(banking_system, mail_system, "Sends e-mails", "SMTP")
-Rel(banking_system, mainframe, "Uses")
+System_Boundary(c2, "BFF API") {
+    Container(bff, "BFF", "NestJS", "BFF ADMINISTRATIVO", $sprite="nestjs")
+}
+
+System_Boundary(c3, "MICROSERVICES") {
+    Container(micro1, "BFF", "NestJS", "BFF ADMINISTRATIVO", $sprite="nestjs")
+    Container(micro2, "BFF", "NestJS", "BFF ADMINISTRATIVO", $sprite="nestjs")
+    Container(micro3, "BFF", "NestJS", "BFF ADMINISTRATIVO", $sprite="nestjs")
+}
+
+ContainerQueue(rabbit, "Queue", "RabbitMQ", "Informations Parking", $sprite="add_to_queue")
+ContainerDb(db, "Database", "MongoDB", "Informations Parking", $sprite="mongodb")
+
+
+
+Rel(admin, frontweb, "")
+Rel(user, bff, "")
+Rel(frontweb, bff, "")
+Rel(bff, micro1, "")
+Rel(micro1, db, "")
+Rel(micro1, rabbit, "processing_ticket")
+Rel(micro2, rabbit, "processing_ticket")
+Rel(micro3, rabbit, "processing_ticket")
+Rel(micro2, db, "")
+Rel(micro3, db, "")
+
+
+
 @enduml
